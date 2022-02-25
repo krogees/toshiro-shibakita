@@ -1,0 +1,9 @@
+#Instalação do docker na Amazon EC2 linux (instância baseada CentOS)
+sudo yum update -y
+sudo amazon-linux-extras install docker -y
+sudo yum install docker -y
+sudo service docker start
+sudo systemctl enable docker
+sudo usermod -a -G docker ec2-user
+Sudo reboot
+docker --version
