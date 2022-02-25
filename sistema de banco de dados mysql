@@ -1,0 +1,19 @@
+#sistema de banco de dados mysql
+
+#criar rede para o ambiente nomeada backend
+docker network create net-backend -y
+
+#https://hub.docker.com/_/mysql/
+docker run --name mysql --restart=always --network=net-backend -v /home/custom:/etc/mysql/conf.d -v /home/data:/var/lib/mysql -v /etc/localtime:/etc/localtime:ro -e MYSQL_ROOT_PASSWORD=pass -d mysql:5.7 -y
+
+#dump
+#https://hub.docker.com/_/mysql/
+docker exec mysql -c 'exec mysqldump --all-databases -uroot -p"$MYSQL_ROOT_PASSWORD"'> /home/all-databases.sql -y
+
+#phpmyadmin
+#https://hub.docker.com/r/phpmyadmin/phpmyadmin
+#https://docs.phpmyadmin.net/en/latest/setup.html#installing-using-docker
+docker run --name myadmin --restart=always --network=net-backend -d -e PMA_HOST=mysql -v /etc/localtime:/etc/localtime:ro -p 8080:80 phpmyadmin/phpmyadmin:5.1.3 -y
+
+#wordpreess
+sudo docker run --name wordpress --restart=always --network=net-backend -e WORDPRESS_DB_HOST=mysql -e WORDPRESS_DB_USER=root -e WORDPRESS_DB_USER=pass -v /home/ec2-user/wordpress/:/var/wwww/html/ -v /home/ec2-user/wordpress/conf.d/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini -v /etc/localtime:/etc/localtime:ro -d -p 8011:80 wordpress:5.9-php7.4 -y
